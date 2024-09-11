@@ -39,7 +39,7 @@ class Customer {
 	}
 
 	private int addRenterBonusPoint(Movie movie) {
-		if (movie.getPriceCode() != null && (movie.getPriceCode() == Movie.NEW_RELEASE) && cart.getRentals().get(movie) > 1)
+		if ((movie.getPriceCode() == MovieType.NEW_RELEASE.getPriceCode()) && cart.getRentals().get(movie) > 1)
 			return 1;
 		else return 0;
 	}

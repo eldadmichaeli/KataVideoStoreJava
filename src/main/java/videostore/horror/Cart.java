@@ -23,10 +23,10 @@ public class Cart {
         return getPriceCalculationStrategy(movie.getPriceCode()).apply(rentalDays);
     }
 
-    private Map<Integer, Function<Integer, Double>> priceCalculationStrategies = Map.of(
-            Movie.REGULAR, this::calculateRegularPrice,
-            Movie.NEW_RELEASE, this::calculateNewReleasePrice,
-            Movie.CHILDRENS, this::calculateChildrenPrice
+    private final Map<MovieType, Function<Integer, Double>> priceCalculationStrategies = Map.of(
+            MovieType.REGULAR, this::calculateRegularPrice,
+            MovieType.NEW_RELEASE, this::calculateNewReleasePrice,
+            MovieType.CHILDREN, this::calculateChildrenPrice
     );
 
     private Double calculateChildrenPrice(Integer days) {
@@ -48,6 +48,6 @@ public class Cart {
     }
 
     private Function<Integer, Double> getPriceCalculationStrategy(int priceCode) {
-        return priceCalculationStrategies.getOrDefault(priceCode, days -> 0.0);
+        return priceCalculationStrategies.getOrDefault(MovieType.fromPriceCode(priceCode), days -> 0.0);
     }
 }
