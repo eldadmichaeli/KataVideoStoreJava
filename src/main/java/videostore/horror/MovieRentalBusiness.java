@@ -2,7 +2,8 @@ package videostore.horror;
 
 import lombok.Getter;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 class MovieRentalBusiness {
     private static final double REGULAR_BASE_AMOUNT = 2.0;
