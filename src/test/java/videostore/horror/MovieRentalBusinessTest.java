@@ -1,0 +1,24 @@
+package videostore.horror;
+
+import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+
+class MovieRentalBusinessTest {
+
+    @Test
+    void characterizationTest() {
+        MovieRentalBusiness movieRentalBusiness = new MovieRentalBusiness("John Doe");
+        movieRentalBusiness.addRental(new Movie("Star Wars", Movie.NEW_RELEASE), 6);
+        movieRentalBusiness.addRental(new Movie("Sofia", Movie.CHILDREN), 7);
+        movieRentalBusiness.addRental(new Movie("Inception", Movie.REGULAR), 5);
+
+        String expected = "Rental Record for John Doe\n"
+                          + "	Star Wars	18.0\n"
+                          + "	Sofia	7.5\n"
+                          + "	Inception	6.5\n"
+                          + "Amount owed is 32.0\n"
+                          + "You earned 4 frequent renter points";
+        
+        assertThat(movieRentalBusiness.statement()).isEqualToIgnoringNewLines(expected);
+    }
+}
