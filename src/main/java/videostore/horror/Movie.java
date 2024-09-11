@@ -1,25 +1,18 @@
 package videostore.horror;
+
+import lombok.Getter;
+
 public class Movie {
-	public static final int CHILDRENS = 2;
 	public static final int REGULAR = 0;
 	public static final int NEW_RELEASE = 1;
-	private String _title;
-	private Integer _priceCode;
+	public static final int CHILDREN = 2;
+	@Getter
+	private final String title;
+	@Getter
+	private final Integer priceCode;
 
 	public Movie(String title, Integer priceCode) {
-		_title = title;
-		_priceCode = priceCode;
+		this.title = title;
+		this.priceCode = priceCode;
 	}
-
-	public Integer getPriceCode() {
-		return _priceCode;
-	}
-
-	public void setPriceCode(Integer arg) {
-		_priceCode = arg;
-	}
-
-	public String getTitle() {
-		return _title;
-	};
 }

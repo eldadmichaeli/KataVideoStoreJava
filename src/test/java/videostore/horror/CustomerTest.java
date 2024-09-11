@@ -6,13 +6,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-public class CustomerTest {
+class CustomerTest {
 
     @Test
-    public void characterizationTest() {
+    void characterizationTest() {
         Customer customer = new Customer("John Doe");
         customer.addRental(new Movie("Star Wars", Movie.NEW_RELEASE), 6);
-        customer.addRental(new Movie("Sofia", Movie.CHILDRENS), 7);
+        customer.addRental(new Movie("Sofia", Movie.CHILDREN), 7);
         customer.addRental(new Movie("Inception", Movie.REGULAR), 5);
         
         String expected = "Rental Record for John Doe\n"

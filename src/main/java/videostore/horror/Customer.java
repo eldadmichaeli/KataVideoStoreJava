@@ -1,27 +1,28 @@
 package videostore.horror;
 
-import java.util.*;
+import lombok.Getter;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 class Customer {
-	private String name;
-	private Map<Movie, Integer> rentals = new LinkedHashMap<>(); // preserves order
+	@Getter
+	private final String name;
+	private final Map<Movie, Integer> rentals = new LinkedHashMap<>();
 
 	public Customer(String name) {
 		this.name = name;
-	};
-
-	public void addRental(Movie m, int d) {
-		rentals.put(m, d);
 	}
 
-	public String getName() {
-		return name;
+	public void addRental(Movie movie, int rentalDays) {
+		rentals.put(movie, rentalDays);
 	}
 
 	public String statement() {
+		StringBuilder result = new StringBuilder();
 		double totalAmount = 0;
 		int frequentRenterPoints = 0;
-		String result = "Rental Record for " + getName() + "\n";
+		 result.append("Rental Record for ").append(getName()).append("\n");
 		// iterate for each rental
 		for (Movie each : rentals.keySet()) {
 			double thisAmount = 0;
@@ -36,7 +37,7 @@ class Customer {
 				case Movie.NEW_RELEASE:
 					thisAmount += dr * 3;
 					break;
-				case Movie.CHILDRENS:
+				case Movie.CHILDREN:
 					thisAmount += 1.5;
 					if (dr > 3)
 						thisAmount += (dr - 3) * 1.5;
@@ -50,12 +51,12 @@ class Customer {
 				 && dr > 1)
 				frequentRenterPoints++;
 			// show figures line for this rental
-			result += "\t" + each.getTitle() + "\t" + thisAmount + "\n";
+			result.append("\t").append(each.getTitle()).append("\t").append(thisAmount).append("\n");
 			totalAmount += thisAmount;
 		}
 		// add footer lines
-		result += "Amount owed is " + totalAmount + "\n";
-		result += "You earned " + frequentRenterPoints + " frequent renter points";
-		return result;
+		result.append("Amount owed is ").append(totalAmount).append("\n");
+		result.append("You earned ").append(frequentRenterPoints).append(" frequent renter points");
+		return result.toString();
 	}
 }
