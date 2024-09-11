@@ -1,8 +1,10 @@
 package videostore.horror;
 
+import lombok.Getter;
+
 import java.util.*;
 
-class Customer {
+class MovieRentalBusiness {
     private static final double REGULAR_BASE_AMOUNT = 2.0;
     private static final double REGULAR_EXTRA_AMOUNT = 1.5;
     private static final double NEW_RELEASE_AMOUNT = 3.0;
@@ -10,20 +12,18 @@ class Customer {
     private static final double CHILDREN_EXTRA_AMOUNT = 1.5;
     private static final int REGULAR_DAYS_THRESHOLD = 2;
     private static final int CHILDREN_DAYS_THRESHOLD = 3;
+    private static final int FREQUENT_RENTER_MIN_POINT = 1;
 
+    @Getter
     private String name;
     private Map<Movie, Integer> rentals = new LinkedHashMap<>(); // preserves order
 
-    public Customer(String name) {
+    public MovieRentalBusiness(String name) {
         this.name = name;
     }
 
     public void addRental(Movie movie, int daysRented) {
         rentals.put(movie, daysRented);
-    }
-
-    public String getName() {
-        return name;
     }
 
     public String statement() {
@@ -51,26 +51,42 @@ class Customer {
         double amount = 0;
         switch (movie.getPriceCode()) {
             case Movie.REGULAR:
-                amount += REGULAR_BASE_AMOUNT;
-                if (daysRented > REGULAR_DAYS_THRESHOLD) {
-                    amount += (daysRented - REGULAR_DAYS_THRESHOLD) * REGULAR_EXTRA_AMOUNT;
-                }
+                amount = calculateRegularAmount(daysRented);
                 break;
             case Movie.NEW_RELEASE:
-                amount += daysRented * NEW_RELEASE_AMOUNT;
+                amount = calculateNewReleaseAmount(daysRented);
                 break;
             case Movie.CHILDREN:
-                amount += CHILDREN_BASE_AMOUNT;
-                if (daysRented > CHILDREN_DAYS_THRESHOLD) {
-                    amount += (daysRented - CHILDREN_DAYS_THRESHOLD) * CHILDREN_EXTRA_AMOUNT;
-                }
+                amount = calculateChildrenAmount(daysRented);
                 break;
+            default:
+                throw new IllegalArgumentException("Unexpected price code: " + movie.getPriceCode());
+        }
+        return amount;
+    }
+
+    private double calculateRegularAmount(int daysRented) {
+        double amount = REGULAR_BASE_AMOUNT;
+        if (daysRented > REGULAR_DAYS_THRESHOLD) {
+            amount += (daysRented - REGULAR_DAYS_THRESHOLD) * REGULAR_EXTRA_AMOUNT;
+        }
+        return amount;
+    }
+
+    private double calculateNewReleaseAmount(int daysRented) {
+        return daysRented * NEW_RELEASE_AMOUNT;
+    }
+
+    private double calculateChildrenAmount(int daysRented) {
+        double amount = CHILDREN_BASE_AMOUNT;
+        if (daysRented > CHILDREN_DAYS_THRESHOLD) {
+            amount += (daysRented - CHILDREN_DAYS_THRESHOLD) * CHILDREN_EXTRA_AMOUNT;
         }
         return amount;
     }
 
     private int calculateFrequentRenterPoints(Movie movie, int daysRented) {
-        int points = 1;
+        int points = FREQUENT_RENTER_MIN_POINT;
         if (movie.getPriceCode() == Movie.NEW_RELEASE && daysRented > 1) {
             points++;
         }

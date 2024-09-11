@@ -10,7 +10,7 @@ public class CustomerTest {
 
     @Test
     public void characterizationTest() {
-        Customer customer = new Customer("John Doe");
+        MovieRentalBusiness customer = new MovieRentalBusiness("John Doe");
         customer.addRental(new Movie("Star Wars", Movie.NEW_RELEASE), 6);
         customer.addRental(new Movie("Sofia", Movie.CHILDREN), 7);
         customer.addRental(new Movie("Inception", Movie.REGULAR), 5);
