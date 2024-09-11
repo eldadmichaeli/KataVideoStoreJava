@@ -24,9 +24,9 @@ class Customer {
 		int frequentRenterPoints = 0;
 		result.append("Rental Record for ").append(getName()).append("\n");
 
-		for (var movieWithRentalAmount : rentals.entrySet()) {
-			Movie movie = movieWithRentalAmount.getKey();
-			int rentalDays = movieWithRentalAmount.getValue();
+		for (var rental : rentals.entrySet()) {
+			Movie movie = rental.getKey();
+			int rentalDays = rental.getValue();
 
 			double pricePerMovie = movie.calculatePrice(rentalDays);
 			frequentRenterPoints += movie.calculateRentalPoints(rentalDays);
