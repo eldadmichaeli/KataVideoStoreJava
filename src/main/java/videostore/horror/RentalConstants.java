@@ -18,8 +18,4 @@ public enum RentalConstants {
     RentalConstants(double value) {
         this.value = value;
     }
-
-    public int getIntValue() {
-        return (int) value;
-    }
 }
