@@ -1,6 +1,7 @@
 package videostore.horror;
 
 import org.junit.jupiter.api.Test;
+import videostore.horror.util.Constants;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,9 +12,9 @@ public class CustomerTest {
     @Test
     public void characterizationTest() {
         Customer customer = new Customer("John Doe");
-        customer.addRental(new Movie("Star Wars", Movie.NEW_RELEASE), 6);
-        customer.addRental(new Movie("Sofia", Movie.CHILDRENS), 7);
-        customer.addRental(new Movie("Inception", Movie.REGULAR), 5);
+        customer.addRental(new Movie("Star Wars", Constants.NEW_RELEASE), 6);
+        customer.addRental(new Movie("Sofia", Constants.CHILDREN), 7);
+        customer.addRental(new Movie("Inception", Constants.REGULAR), 5);
         
         String expected = "Rental Record for John Doe\n"
                 + "	Star Wars	18.0\n"

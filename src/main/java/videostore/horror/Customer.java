@@ -1,5 +1,7 @@
 package videostore.horror;
 
+import videostore.horror.util.Constants;
+
 import java.util.*;
 
 class Customer {
@@ -10,8 +12,8 @@ class Customer {
 		this.name = name;
 	};
 
-	public void addRental(Movie m, int d) {
-		rentals.put(m, d);
+	public void addRental(Movie movie, int daysRented) {
+		rentals.put(movie, daysRented);
 	}
 
 	public String getName() {
@@ -21,41 +23,71 @@ class Customer {
 	public String statement() {
 		double totalAmount = 0;
 		int frequentRenterPoints = 0;
-		String result = "Rental Record for " + getName() + "\n";
-		// iterate for each rental
-		for (Movie each : rentals.keySet()) {
-			double thisAmount = 0;
-			// determine amounts for each line
-			int dr = rentals.get(each);
-			switch (each.getPriceCode()) {
-				case Movie.REGULAR:
-					thisAmount += 2;
-					if (dr > 2)
-						thisAmount += (dr - 2) * 1.5;
-					break;
-				case Movie.NEW_RELEASE:
-					thisAmount += dr * 3;
-					break;
-				case Movie.CHILDRENS:
-					thisAmount += 1.5;
-					if (dr > 3)
-						thisAmount += (dr - 3) * 1.5;
-					break;
-			}
-			// add frequent renter points
-			frequentRenterPoints++;
-			// add bonus for a two day new release rental
-			if (each.getPriceCode() != null &&
-				 (each.getPriceCode() == Movie.NEW_RELEASE)
-				 && dr > 1)
-				frequentRenterPoints++;
+		StringBuilder result = new StringBuilder();
+		result.append(Constants.RENTAL_RECORD_FOR).append(getName()).append(Constants.LINE_BREAK);
+		for (Movie movie : rentals.keySet()) {
+			double currentPriceAmount = 0;
+			int daysRentedForMovie = rentals.get(movie);
+			currentPriceAmount = calculateAmount(movie, currentPriceAmount, daysRentedForMovie);
+			frequentRenterPoints = addBonusForTwoDays(movie, daysRentedForMovie, frequentRenterPoints);
 			// show figures line for this rental
-			result += "\t" + each.getTitle() + "\t" + thisAmount + "\n";
-			totalAmount += thisAmount;
+			result.append(Constants.TAB).append(movie.getTitle()).append(Constants.TAB).append(currentPriceAmount).append(Constants.LINE_BREAK);
+			totalAmount += currentPriceAmount;
 		}
-		// add footer lines
-		result += "Amount owed is " + totalAmount + "\n";
-		result += "You earned " + frequentRenterPoints + " frequent renter points";
-		return result;
+		return buildResult(result, totalAmount, frequentRenterPoints);
+	}
+
+	// add bonus for a two day new release rental
+	private static int addBonusForTwoDays(Movie movie, int moviePriceCode, int frequentRenterPoints) {
+		frequentRenterPoints++;
+		if (shouldAddMoreBonus(movie, moviePriceCode))
+			frequentRenterPoints++;
+		return frequentRenterPoints;
+	}
+
+	private static boolean shouldAddMoreBonus(Movie movie, int moviePriceCode) {
+		return movie.getPriceCode() != null &&
+				(movie.getPriceCode() == Constants.NEW_RELEASE)
+				&& moviePriceCode > 1;
+	}
+
+	private static double calculateAmount(Movie movie, double currentPriceAmount, int daysRentedForMovie) {
+		switch (movie.getPriceCode()) {
+			case Constants.REGULAR:
+				currentPriceAmount = getRegularPriceAmount(currentPriceAmount, daysRentedForMovie);
+				break;
+			case Constants.NEW_RELEASE:
+				currentPriceAmount = getNewReleasePriceAmount(currentPriceAmount, daysRentedForMovie);
+				break;
+			case Constants.CHILDREN:
+				currentPriceAmount = getChildrenPriceAmount(currentPriceAmount, daysRentedForMovie);
+				break;
+		}
+		return currentPriceAmount;
+	}
+
+	private static double getChildrenPriceAmount(double currentPriceAmount, int daysRentedForMovie) {
+		currentPriceAmount += 1.5;
+		if (daysRentedForMovie > Constants.RENTED_FOR_THREE_DAYS)
+			currentPriceAmount += (daysRentedForMovie - Constants.RENTED_FOR_THREE_DAYS) * 1.5;
+		return currentPriceAmount;
+	}
+
+	private static double getNewReleasePriceAmount(double currentPriceAmount, int daysRentedForMovie) {
+		currentPriceAmount += daysRentedForMovie * 3;
+		return currentPriceAmount;
+	}
+
+	private static double getRegularPriceAmount(double currentPriceAmount, int daysRentedForMovie) {
+		currentPriceAmount += 2;
+		if (daysRentedForMovie > Constants.RENTED_FOR_TWO_DAYS)
+			currentPriceAmount += (daysRentedForMovie - Constants.RENTED_FOR_TWO_DAYS) * 1.5;
+		return currentPriceAmount;
+	}
+
+	private String buildResult(StringBuilder result, double totalAmount, int frequentRenterPoints) {
+		result.append(Constants.AMOUNT_OWED_IS).append(totalAmount).append(Constants.LINE_BREAK);
+		result.append(Constants.YOU_EARNED).append(frequentRenterPoints).append(Constants.FREQUENT_RENTER_POINTS);
+		return result.toString();
 	}
 }
