@@ -2,12 +2,8 @@ package videostore.horror;
 
 import lombok.Getter;
 
-import javax.xml.crypto.dsig.keyinfo.KeyValue;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static videostore.horror.MovieType.NEW_RELEASE;
 
 class Customer {
 	@Getter
@@ -24,7 +20,7 @@ class Customer {
 
 	public String statement() {
 		StringBuilder result = new StringBuilder();
-		double totalAmount = 0;
+		double totalPrice = 0;
 		int frequentRenterPoints = 0;
 		result.append("Rental Record for ").append(getName()).append("\n");
 
@@ -32,17 +28,14 @@ class Customer {
 			Movie movie = movieWithRentalAmount.getKey();
 			int rentalDays = movieWithRentalAmount.getValue();
 
-			double amountPerMovie = movie.calculateAmount(rentalDays);
-			// add frequent renter points
+			double pricePerMovie = movie.calculatePrice(rentalDays);
 			frequentRenterPoints += movie.calculateRentalPoints(rentalDays);
 
-			// show figures line for this rental
-			result.append("\t").append(movie.getTitle()).append("\t").append(amountPerMovie).append("\n");
-			totalAmount += amountPerMovie;
+			result.append("\t").append(movie.getTitle()).append("\t").append(pricePerMovie).append("\n");
+			totalPrice += pricePerMovie;
 		}
 
-		// add footer lines
-		result.append("Amount owed is ").append(totalAmount).append("\n");
+		result.append("Amount owed is ").append(totalPrice).append("\n");
 		result.append("You earned ").append(frequentRenterPoints).append(" frequent renter points");
 		return result.toString();
 	}
