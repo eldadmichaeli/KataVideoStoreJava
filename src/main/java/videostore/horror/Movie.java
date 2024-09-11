@@ -26,23 +26,21 @@ public class Movie {
 	private final MovieType movieType;
 
 	public double calculatePrice(int rentalDays){
-		double price = 0;
-		switch (movieType) {
-			case REGULAR:
-				price += REGULAR_PRICE;
+		return switch (movieType) {
+			case REGULAR -> {
 				if (rentalDays > REGULAR_DAYS_LIMIT)
-					price += (rentalDays - REGULAR_DAYS_LIMIT) * REGULAR_OVERDRAFT_COEFFICIENT;
-				break;
-			case NEW_RELEASE:
-				price += rentalDays * NEW_RELEASE_PRICE;
-				break;
-			case CHILDREN:
-				price += CHILDREN_PRICE;
+					yield REGULAR_PRICE + (rentalDays - REGULAR_DAYS_LIMIT) * REGULAR_OVERDRAFT_COEFFICIENT;
+				else
+					yield REGULAR_PRICE;
+			}
+			case NEW_RELEASE -> rentalDays * NEW_RELEASE_PRICE;
+			case CHILDREN -> {
 				if (rentalDays > CHILDREN_DAYS_LIMIT)
-					price += (rentalDays - CHILDREN_DAYS_LIMIT) * CHILDREN_OVERDRAFT_COEFFICIENT;
-				break;
-		}
-		return price;
+					yield CHILDREN_PRICE + (rentalDays - CHILDREN_DAYS_LIMIT) * CHILDREN_OVERDRAFT_COEFFICIENT;
+				else
+					yield CHILDREN_PRICE;
+			}
+		};
 	}
 
 	public int calculateRentalPoints(int rentalDays){
