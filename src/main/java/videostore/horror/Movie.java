@@ -1,4 +1,10 @@
 package videostore.horror;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class Movie {
 	public static final int CHILDRENS = 2;
 	public static final int REGULAR = 0;

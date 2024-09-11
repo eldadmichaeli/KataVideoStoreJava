@@ -28,38 +28,47 @@ class Customer {
 		String result = "Rental Record for " + getName() + "\n";
 		// iterate for each rental
 		for (Movie movie : rentals.keySet()) {
-			double thisAmount = 0;
-			// determine amounts for movie line
-			int rentalDays = rentals.get(movie);
-			switch (movie.getPriceCode()) {
-				case Movie.REGULAR:
-					thisAmount += 2;
-					if (rentalDays > MIN_DAYS_FOR_REGULAR)
-						thisAmount += (rentalDays - 2) * DAY_PRICE;
-					break;
-				case Movie.NEW_RELEASE:
-					thisAmount += rentalDays * 3;
-					break;
-				case Movie.CHILDRENS:
-					thisAmount += DAY_PRICE;
-					if (rentalDays > MIN_DAYS_CHILDREN)
-						thisAmount += (rentalDays - 3) * DAY_PRICE;
-					break;
-			}
+			double movieRentalPrice = calcMovieRentalPrice(movie);
 			// add frequent renter points
 			frequentRenterPoints++;
-			// add bonus for a two day new release rental
-			if (movie.getPriceCode() != null &&
-				 (movie.getPriceCode() == Movie.NEW_RELEASE)
-				 && rentalDays > 1)
-				frequentRenterPoints++;
+
+			frequentRenterPoints += addRenterBonusPoint(movie);
 			// show figures line for this rental
-			result += "\t" + movie.getTitle() + "\t" + thisAmount + "\n";
-			totalAmount += thisAmount;
+			result += "\t" + movie.getTitle() + "\t" + movieRentalPrice + "\n";
+			totalAmount += movieRentalPrice;
 		}
 		// add footer lines
 		result += "Amount owed is " + totalAmount + "\n";
 		result += "You earned " + frequentRenterPoints + " frequent renter points";
 		return result;
+	}
+
+	private int addRenterBonusPoint(Movie movie) {
+		if (movie.getPriceCode() != null && (movie.getPriceCode() == Movie.NEW_RELEASE) && rentals.get(movie) > 1)
+			return 1;
+		else return 0;
+	}
+
+	private double calcMovieRentalPrice(Movie movie){
+		double thisAmount = 0;
+		// determine amounts for movie line
+		int rentalDays = rentals.get(movie);
+		switch (movie.getPriceCode()) {
+			case Movie.REGULAR:
+				thisAmount += 2;
+				if (rentalDays > MIN_DAYS_FOR_REGULAR)
+					thisAmount += (rentalDays - 2) * DAY_PRICE;
+				break;
+			case Movie.NEW_RELEASE:
+				thisAmount += rentalDays * 3;
+				break;
+			case Movie.CHILDRENS:
+				thisAmount += DAY_PRICE;
+				if (rentalDays > MIN_DAYS_CHILDREN)
+					thisAmount += (rentalDays - 3) * DAY_PRICE;
+				break;
+		}
+
+		return thisAmount;
 	}
 }
