@@ -19,6 +19,6 @@ class MovieRentalBusinessTest {
                           + "Amount owed is 32.0\n"
                           + "You earned 4 frequent renter points";
         
-        assertThat(movieRentalBusiness.statement()).isEqualToIgnoringNewLines(expected);
+        assertThat(movieRentalBusiness.generateRentalStatement()).isEqualToIgnoringNewLines(expected);
     }
 }

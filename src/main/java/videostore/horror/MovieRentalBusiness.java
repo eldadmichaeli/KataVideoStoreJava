@@ -18,7 +18,7 @@ class MovieRentalBusiness {
         rentals.put(movie, daysRented);
     }
 
-    public String statement() {
+    public String generateRentalStatement() {
         double totalAmount = 0;
         int frequentRenterPoints = 0;
         StringBuilder result = new StringBuilder("Rental Record for " + getName() + "\n");
