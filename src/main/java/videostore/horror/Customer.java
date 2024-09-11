@@ -4,18 +4,18 @@ import java.util.*;
 
 class Customer {
 	private String name;
-	private Map<Movie, Integer> rentals = new LinkedHashMap<>(); // preserves order
+	private Map<Movie, Integer> movieToAmountOfDays = new LinkedHashMap<>(); // preserves order
 
 	public Customer(String name) {
 		this.name = name;
 	};
 
-	public void addRental(Movie m, int d) {
-		rentals.put(m, d);
+	public void addRental(Movie movie, int amountOfDays) {
+		movieToAmountOfDays.put(movie, amountOfDays);
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public String statement() {
@@ -23,39 +23,51 @@ class Customer {
 		int frequentRenterPoints = 0;
 		String result = "Rental Record for " + getName() + "\n";
 		// iterate for each rental
-		for (Movie each : rentals.keySet()) {
-			double thisAmount = 0;
-			// determine amounts for each line
-			int dr = rentals.get(each);
-			switch (each.getPriceCode()) {
-				case REGULAR:
-					thisAmount += 2;
-					if (dr > 2)
-						thisAmount += (dr - 2) * 1.5;
-					break;
-				case NEW_RELEASE:
-					thisAmount += dr * 3;
-					break;
-				case CHILDREN:
-					thisAmount += 1.5;
-					if (dr > 3)
-						thisAmount += (dr - 3) * 1.5;
-					break;
-			}
+		for (Movie movie : movieToAmountOfDays.keySet()) {
+			int amountOfDays = movieToAmountOfDays.get(movie);
+			double amount = calculateAmount(movie, amountOfDays);
 			// add frequent renter points
-			frequentRenterPoints++;
-			// add bonus for a two day new release rental
-			if (each.getPriceCode() != null &&
-				 (each.getPriceCode() == PriceCode.NEW_RELEASE)
-				 && dr > 1)
-				frequentRenterPoints++;
+			frequentRenterPoints += calculateFrequent(movie, amountOfDays);
 			// show figures line for this rental
-			result += "\t" + each.getTitle() + "\t" + thisAmount + "\n";
-			totalAmount += thisAmount;
+			result += "\t" + movie.getTitle() + "\t" + amount + "\n";
+			totalAmount += amount;
 		}
 		// add footer lines
 		result += "Amount owed is " + totalAmount + "\n";
 		result += "You earned " + frequentRenterPoints + " frequent renter points";
 		return result;
+	}
+
+	private int calculateFrequent(Movie movie, int amountOfDays) {
+		int frequentRenterPoints = 1;
+		// add bonus for a two day new release rental
+		if (movie.getPriceCode() != null &&
+				(movie.getPriceCode() == PriceCode.NEW_RELEASE)
+				&& amountOfDays > 1)
+			frequentRenterPoints++;
+
+		return frequentRenterPoints;
+	}
+
+	private double calculateAmount(Movie movie, int amountOfDays) {
+		double amount = 0;
+		// determine amounts for each line
+		switch (movie.getPriceCode()) {
+			case REGULAR:
+				amount += 2;
+				if (amountOfDays > 2)
+					amount += (amountOfDays - 2) * 1.5;
+				break;
+			case NEW_RELEASE:
+				amount += amountOfDays * 3;
+				break;
+			case CHILDREN:
+				amount += 1.5;
+				if (amountOfDays > 3)
+					amount += (amountOfDays - 3) * 1.5;
+				break;
+		}
+
+		return amount;
 	}
 }
