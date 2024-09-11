@@ -1,20 +1,5 @@
 package videostore.horror;
 
-public class Movie {
+public record Movie(String title, PriceCode priceCode) {
 
-	private String title;
-	private PriceCode priceCode;
-
-	public Movie(String title, PriceCode priceCode) {
-		this.title = title;
-		this.priceCode = priceCode;
-	}
-
-	public PriceCode getPriceCode() {
-		return this.priceCode;
-	}
-
-	public String getTitle() {
-		return this.title;
-	}
 }
